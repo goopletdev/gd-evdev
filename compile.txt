@@ -1,0 +1,1 @@
+cc $(pkg-config --cflags libevdev) -o main main.c gd-evdev.c $(pkg-config --libs libevdev)
