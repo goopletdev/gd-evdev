@@ -62,7 +62,7 @@ struct input_event gd_evdev_new_event(
         unsigned short code,
         int val);
 
-struct timeval timeval_difference(struct timeval new, struct timeval old);
+struct timeval gd_evdev_timeval_diff(struct timeval new, struct timeval old);
 
 int gd_evdev_write_event(struct gd_evdev *gdev, struct input_event ev);
 

@@ -107,7 +107,7 @@ struct input_event gd_evdev_new_event(unsigned short type, unsigned short code, 
     return ev;
 }
 
-struct timeval timeval_difference(struct timeval new, struct timeval old) {
+struct timeval gd_evdev_timeval_diff(struct timeval new, struct timeval old) {
     unsigned long long microseconds = (new.tv_sec * 1000000) + new.tv_usec - ((old.tv_sec * 1000000) + old.tv_usec);
     struct timeval diff;
     diff.tv_usec = microseconds % 1000000;
