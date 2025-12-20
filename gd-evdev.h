@@ -42,8 +42,17 @@ int gd_bitmap_popcount(size_t size, const unsigned char *buffer);
 struct gd_evdev* gd_evdev_new(void);
 
 int gd_evdev_init_dev(struct gd_evdev *gdev, char *dev_path);
-
 int gd_evdev_init_uinput(struct gd_evdev *gdev);
+
+/**
+ * shorthand for:
+ *
+ * err = gd_evdev_init_dev(gdev, dev_path);
+ * if (err != 0) return err;
+ * err = gd_evdev_init_uinput(gdev);
+ * return err;
+ */
+int gd_evdev_init_gdev_from_dev_path(struct gd_evdev *gdev, char *dev_path);
 
 int gd_evdev_await_all_keys_released(struct gd_evdev *gdev);
 

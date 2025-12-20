@@ -11,24 +11,15 @@ int main (int argc, char **argv) {
     int err;
     gdev = gd_evdev_new();
 
-    /////////////////////////
-    /// init physical dev ///
-    /////////////////////////
-    err = gd_evdev_init_dev(gdev, TEST_DEV_PATH);
+    /////////////////
+    /// init gdev ///
+    /////////////////
+    err = gd_evdev_init_gdev_from_dev_path(gdev, TEST_DEV_PATH);
     if (err != 0) {
-        printf("ERROR (%i): Failed to initialize device\n", err);
+        printf("ERROR (%i): Failed to initialize dev or create ui dev\n", err);
         return err;
     }
     gd_evdev_log_device(gdev);
-
-    ///////////////////
-    /// init ui dev ///
-    ///////////////////
-    err = gd_evdev_init_uinput(gdev);
-    if (err != 0) {
-        printf("ERROR (%i): Failed to create ui device\n", err);
-        return err;
-    }
 
     /////////////////////////
     /// grab physical dev ///
@@ -37,6 +28,7 @@ int main (int argc, char **argv) {
     err = gd_evdev_grab(gdev);
     if (err != 0) {
         printf("ERROR (%i): Failed go grab device\n", err);
+        return err;
     }
 
     /////////////////
