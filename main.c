@@ -27,7 +27,7 @@ int main (int argc, char **argv) {
     gd_evdev_await_all_keys_released(gdev);
     err = gd_evdev_grab(gdev);
     if (err != 0) {
-        printf("ERROR (%i): Failed go grab device\n", err);
+        printf("ERROR (%i): Failed to grab device\n", err);
         return err;
     }
 
@@ -49,4 +49,4 @@ int main (int argc, char **argv) {
     err = gd_evdev_cleanup(gdev);
     return err;
 }
-    
+
