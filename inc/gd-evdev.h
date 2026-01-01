@@ -22,6 +22,7 @@
  * };
  */
 
+// TODO: include capslock and stuff ig
 enum gd_evdev_mod_keys {
     GD_MOD_NONE = 0,
     GD_MOD_L_SHIFT = 1U << 0,
@@ -98,6 +99,12 @@ struct input_event gd_evdev_new_event(
 struct timeval gd_evdev_timeval_diff(struct timeval new, struct timeval old);
 
 int gd_evdev_write_event(struct gd_evdev *gdev, struct input_event ev);
+
+/**
+ * sends key event and syn report
+ * TODO: add error handling
+ */
+int gd_evdev_send_key_event(struct gd_evdev *gdev, unsigned short key, int val);
 
 int gd_evdev_cleanup(struct gd_evdev *gdev);
 

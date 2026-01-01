@@ -159,6 +159,14 @@ int gd_evdev_write_event(struct gd_evdev *gdev, struct input_event ev) {
     return err;
 }
 
+int gd_evdev_send_key_event(struct gd_evdev *gdev, unsigned short key, int val) {
+    struct input_event ev = gd_evdev_new_event(EV_KEY, key, val);
+    int err = gd_evdev_write_event(gdev, ev);
+    ev = gd_evdev_new_event(EV_SYN, SYN_REPORT, 0);
+    err = gd_evdev_write_event(gdev, ev);
+    return err;
+}
+
 int gd_evdev_cleanup(struct gd_evdev *gdev) {
     int err = gd_evdev_ungrab(gdev);
     if (err != 0) return err;

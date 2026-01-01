@@ -49,6 +49,10 @@ int main (int argc, char **argv) {
         if (expected) {
             printf("Expected output: %c\n", expected);
         }
+
+        if (ev.type == EV_KEY && ev.code == KEY_GRAVE && ev.value == 1) {
+            gd_evdev_write_string(gdev, sizeof("Ilúvatar"), "Ilúvatar"); // ú
+        }
     } while (err == 1 || err == 0 || err == -EAGAIN);
 
     

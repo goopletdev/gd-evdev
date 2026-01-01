@@ -1,4 +1,9 @@
 cc $(pkg-config --cflags libevdev) -Ilib/gd/include -Iinc/ \
--o build/bin/main src/main.c src/gd-evdev.c lib/gd/src/gd-unicode.c \
+-o build/bin/main \
+\
+src/main.c \
+src/gd-evdev.c \
+src/gd-evdev-string.c \
+lib/gd/src/gd-unicode.c \
 $(pkg-config --libs libevdev) \
 
