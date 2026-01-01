@@ -1,5 +1,18 @@
 #include "gd-evdev.h"
 
+enum gd_evdev_mod_keys gd_evdev_mod_map[KEY_MAX + 1] = {
+    [0 ... KEY_MAX] = GD_MOD_NONE,
+
+    [KEY_LEFTSHIFT] = GD_MOD_L_SHIFT,
+    [KEY_RIGHTSHIFT] = GD_MOD_R_SHIFT,
+    [KEY_LEFTALT] = GD_MOD_L_ALT,
+    [KEY_RIGHTALT] = GD_MOD_R_ALT,
+    [KEY_LEFTCTRL] = GD_MOD_L_CTRL,
+    [KEY_RIGHTCTRL] = GD_MOD_R_CTRL,
+    [KEY_LEFTMETA] = GD_MOD_L_META,
+    [KEY_RIGHTMETA] = GD_MOD_R_META,
+};
+
 int gd_bitmap_popcount(size_t size, const unsigned char *buffer) {
     int popcount = 0;
     for (size_t i = 0; i < size; i++) {
@@ -12,8 +25,10 @@ struct gd_evdev* gd_evdev_new(void) {
     struct gd_evdev *g = (struct gd_evdev*)malloc(sizeof(struct gd_evdev));
     g->dev.dev = NULL;
     g->dev.fd = -1;
+    g->dev.mod = GD_MOD_NONE;
     g->ui.dev = NULL;
     g->ui.fd = -1;
+    g->ui.mod = GD_MOD_NONE;
     return g;
 }
 
@@ -21,6 +36,7 @@ int gd_evdev_init_dev(struct gd_evdev *gdev, char *dev_path) {
     struct gd_evdevT d;
     d.fd = open(dev_path, O_RDONLY);
     d.dev = libevdev_new();
+    d.mod = GD_MOD_NONE;
     if (!d.dev) {
         return ENOMEM;
     }
@@ -42,6 +58,7 @@ int gd_evdev_init_uinput(struct gd_evdev *gdev) {
     }
 
     int err = libevdev_uinput_create_from_device(gdev->dev.dev, ui.fd, &ui.dev);
+    ui.mod = GD_MOD_NONE;
     gdev->ui = ui;
     return err;
 }
@@ -102,7 +119,15 @@ int gd_evdev_is_keyboard(struct gd_evdev *gdev) {
 }
 
 int gd_evdev_next_event(struct gd_evdev *gdev, struct input_event *ev) {
-    return libevdev_next_event(gdev->dev.dev, LIBEVDEV_READ_FLAG_NORMAL, ev);
+    int err = libevdev_next_event(gdev->dev.dev, LIBEVDEV_READ_FLAG_NORMAL, ev);
+    if (ev->type == EV_KEY) {
+        if (ev->value > 0) {
+            gdev->dev.mod |= gd_evdev_mod_map[ev->code];
+        } else {
+            gdev->dev.mod &= ~(gd_evdev_mod_map[ev->code]);
+        }
+    }
+    return err;
 }
 
 struct input_event gd_evdev_new_event(unsigned short type, unsigned short code, int val) {
@@ -123,7 +148,15 @@ struct timeval gd_evdev_timeval_diff(struct timeval new, struct timeval old) {
 }
 
 int gd_evdev_write_event(struct gd_evdev *gdev, struct input_event ev) {
-    return libevdev_uinput_write_event(gdev->ui.dev, ev.type, ev.code, ev.value);
+    int err = libevdev_uinput_write_event(gdev->ui.dev, ev.type, ev.code, ev.value);
+    if (ev.type == EV_KEY) {
+        if (ev.value > 0) {
+            gdev->ui.mod |= gd_evdev_mod_map[ev.code];
+        } else {
+            gdev->ui.mod &= ~(gd_evdev_mod_map[ev.code]);
+        }
+    }
+    return err;
 }
 
 int gd_evdev_cleanup(struct gd_evdev *gdev) {

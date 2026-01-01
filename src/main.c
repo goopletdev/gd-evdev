@@ -41,6 +41,9 @@ int main (int argc, char **argv) {
             // passthrough grabbed device event
             err = gd_evdev_write_event(gdev, ev);
         } 
+        if (ev.type == EV_SYN) {
+            printf("Mod keys: %i %i\n", __builtin_popcount(gdev->ui.mod), __builtin_popcount(gdev->dev.mod));
+        }
     } while (err == 1 || err == 0 || err == -EAGAIN);
     
     ///////////////

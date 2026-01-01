@@ -22,14 +22,35 @@
  * };
  */
 
+enum gd_evdev_mod_keys {
+    GD_MOD_NONE = 0,
+    GD_MOD_L_SHIFT = 1U << 0,
+    GD_MOD_R_SHIFT = 1U << 1,
+    GD_MOD_L_ALT = 1U << 2,
+    GD_MOD_R_ALT = 1U << 3,
+    GD_MOD_L_CTRL = 1U << 4,
+    GD_MOD_R_CTRL = 1U << 5,
+    GD_MOD_L_META = 1U << 6,
+    GD_MOD_R_META = 1U << 7,
+
+    GD_MOD_SHIFT = GD_MOD_L_SHIFT | GD_MOD_R_SHIFT,
+    GD_MOD_ALT = GD_MOD_L_ALT | GD_MOD_R_ALT,
+    GD_MOD_CTRL = GD_MOD_L_CTRL | GD_MOD_R_CTRL,
+    GD_MOD_META = GD_MOD_L_META | GD_MOD_R_META,
+};
+
+extern enum gd_evdev_mod_keys gd_evdev_mod_map[KEY_MAX + 1];
+
 struct gd_evdevT {
     struct libevdev *dev;
     int fd;
+    enum gd_evdev_mod_keys mod;
 };
 
 struct gd_evdev_uinputT {
     struct libevdev_uinput *dev;
     int fd;
+    enum gd_evdev_mod_keys mod;
 };
 
 struct gd_evdev {
@@ -64,6 +85,9 @@ void gd_evdev_log_event(struct input_event ev);
 
 int gd_evdev_is_keyboard(struct gd_evdev *gdev);
 
+/**
+ * gets next libevdev event, sets mod for physical device
+ */
 int gd_evdev_next_event(struct gd_evdev *gdev, struct input_event *ev);
 
 struct input_event gd_evdev_new_event(
