@@ -1,3 +1,0 @@
-[submodule "lib/gd"]
-	path = lib/gd
-	url = https://github.com/goopletdev/gd.git
