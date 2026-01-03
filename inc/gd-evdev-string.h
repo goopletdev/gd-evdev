@@ -21,7 +21,7 @@ extern const struct gd_evdev_key_mod gd_evdev_char_key_combo[128];
 /**
  * the expected chars from key events
  */
-extern const char *key_to_char_map[KEY_MAX + 1];
+extern const char *gd_evdev_expected_char_map[KEY_MAX + 1];
 
 int gd_evdev_write_char(struct gd_evdev *gdev, char c);
 

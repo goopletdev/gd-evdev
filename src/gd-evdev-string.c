@@ -4,7 +4,7 @@ char gd_evdev_expected_char(struct gd_evdev *gdev, struct input_event ev) {
     if (ev.type != EV_KEY || ev.value < 1) {
         return '\0';
     }
-    const char *str = key_to_char_map[ev.code];
+    const char *str = gd_evdev_expected_char_map[ev.code];
     if (str == NULL) {
         return '\0';
     }
@@ -206,7 +206,7 @@ const struct gd_evdev_key_mod gd_evdev_char_key_combo[128] = {
 /**
  * the expected chars from key events
  */
-const char *key_to_char_map[KEY_MAX + 1] = {
+const char *gd_evdev_expected_char_map[KEY_MAX + 1] = {
     [0 ... KEY_MAX] = NULL,
 
     #define KEY_CHARMAP(k, s) [k] = s
